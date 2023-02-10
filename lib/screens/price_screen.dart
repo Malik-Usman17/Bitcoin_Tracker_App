@@ -8,6 +8,9 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
+
+  String? selectedCurrency = 'USD';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +46,27 @@ class _PriceScreenState extends State<PriceScreen> {
             alignment: Alignment.center,
             padding: EdgeInsets.only(bottom: 30.0),
             color: Colors.lightBlue,
-            child: null,
+            child: DropdownButton(
+              value: selectedCurrency,
+              items: [
+              DropdownMenuItem(
+                child: Text('GBP'),
+                value: 'GBP',
+              ),
+                DropdownMenuItem(
+                  child: Text('EUR'),
+                  value: 'EUR',
+                ),
+                DropdownMenuItem(
+                  child: Text('USD'),
+                  value: 'USD',
+                ),
+            ], onChanged: (val) {
+                setState(() {
+                  selectedCurrency = val;
+                });
+              // selectedCurrency = val;
+            },),
           )
         ],
       ),
