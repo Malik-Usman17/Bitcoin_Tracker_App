@@ -1,5 +1,7 @@
 import 'package:bitcoin_tracker/coins.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:io' show Platform;
 
 class PriceScreen extends StatefulWidget {
   const PriceScreen({Key? key}) : super(key: key);
@@ -12,33 +14,60 @@ class _PriceScreenState extends State<PriceScreen> {
 
   String? selectedCurrency = 'USD';
 
-  // List<DropdownMenuItem> getDropDownItems() {
-  //   List<DropdownMenuItem<String>> dropdownItems = [];
-  //
-  //   for(int i=0; i<currenciesList.length; i++){
-  //     String currency = currenciesList[i];
-  //     var newItem = DropdownMenuItem(
-  //         child: Text(currency),
-  //         value: currency,
-  //     );
-  //     dropdownItems.add(newItem);
-  //   }
-  //
-  //   return dropdownItems;
-  // }
+  CupertinoPicker iosPicker() {
+    List<Text> pickerItems = [];
+    for(String currency in currenciesList){
+      pickerItems.add(Text(currency));
+    }
+    return CupertinoPicker(
+      itemExtent: 32.0,
+      onSelectedItemChanged: (selectedIndex) {
+        print(selectedIndex);
+      },
+      children: pickerItems,
+    );
+  }
 
-  List<DropdownMenuItem> getDropDownItems() {
+  DropdownButton<String> getDropDownButton() {
     List<DropdownMenuItem<String>> dropdownItems = [];
-
     for(String currency in currenciesList){
       var newItem = DropdownMenuItem(
-        child: Text(currency),
         value: currency,
+        child: Text(currency),
       );
       dropdownItems.add(newItem);
     }
+    return DropdownButton<String>(
+        isExpanded: true,
+        menuMaxHeight: 200,
+        value: selectedCurrency,
+        items: dropdownItems,
+        onChanged: (val){
+          setState(() {
+            selectedCurrency = val;
+          });
+        }
+    );
+  }
 
-    return dropdownItems;
+  List<Widget> getPickerItem () {
+    List<Text> pickerItems = [];
+    for(String currency in currenciesList){
+      pickerItems.add(Text(currency));
+    }
+    return pickerItems;
+  }
+
+  Widget getPickerPlatformSpecific() {
+    if(Platform.isIOS){
+      return iosPicker();
+    }
+    else {
+      return getDropDownButton();
+    }
+    // else{
+    //   return;
+    // }
   }
 
   @override
@@ -77,34 +106,7 @@ class _PriceScreenState extends State<PriceScreen> {
             alignment: Alignment.center,
             padding: const EdgeInsets.only(bottom: 30.0, left: 30, right: 30),
             color: Colors.lightBlue,
-            child: DropdownButton(
-              isExpanded: true,
-              iconSize: 35,
-              borderRadius: BorderRadius.circular(10),
-              menuMaxHeight: 200,
-              value: selectedCurrency,
-              items: getDropDownItems(),
-            //   items: [
-            //   DropdownMenuItem(
-            //     child: Text('GBP'),
-            //     value: 'GBP',
-            //   ),
-            //     DropdownMenuItem(
-            //       child: Text('EUR'),
-            //       value: 'EUR',
-            //     ),
-            //     DropdownMenuItem(
-            //       child: Text('USD'),
-            //       value: 'USD',
-            //     ),
-            // ],
-              onChanged: (val) {
-                setState(() {
-                  selectedCurrency = val;
-                });
-              // selectedCurrency = val;
-            },
-            ),
+            child: Platform.isIOS ? iosPicker() : getDropDownButton(),
           )
         ],
       ),
