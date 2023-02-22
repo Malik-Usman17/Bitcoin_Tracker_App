@@ -13,7 +13,7 @@ class Networking {
       return jsonDecode(data);
     }
     else{
-      print(response);
+      print("checking: ${response.body}");
     }
   }
 }
